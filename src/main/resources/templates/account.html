@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>账户</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/myblog.css"/>
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/moment.js" type="application/javascript"></script>
+</head>
+<body>
+<div class="container-fluid account_page">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" th:class="${method == 'login'}?'active':''"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">登陆</a></li>
+                    <li role="presentation" th:class="${method == 'register'}?'active':''"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">注册</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content mytable">
+                    <div role="tabpanel" th:class="${method == 'login'}?'tab-pane active':'tab-pane'" id="home">
+                        <!--登陆-->
+                        <form action="/account" method="post" class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="email" name="account" th:value="${account}" class="form-control" placeholder="请输入邮箱登陆哦～">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="password" name="password" class="form-control" placeholder="输入密码哦～小心不要让别人看到">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <button type="submit" name="method" value="login" class="btn btn-default mybtn">登陆</button>
+                                </div>
+                                <div th:if="${error != null}" class="col-sm-9 alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>出错啦！</strong> <span th:text="${error}"></span>
+                                </div>
+                                <div th:if="${success != null}" class="col-sm-9 alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <span th:text="${error}"></span>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div role="tabpanel" th:class="${method == 'register'}?'tab-pane active':'tab-pane'" id="profile">
+                        <!--注册-->
+                        <form action="/account" method="post" class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="email" name="account" th:value="${account}" class="form-control" placeholder="请输入邮箱注册哦～">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="password" name="password" class="form-control" placeholder="设定您的密码哦，不要让别人知道（嘘～）">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input type="password" name="duPass" class="form-control" placeholder="重新输入一次哦，记得不要输错～">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-3">
+                                    <button type="submit" name="method" value="register" class="mybtn btn btn-default">注册</button>
+                                </div>
+                                <div th:if="${error != null}" class="col-sm-9 alert alert-danger alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <strong>出错啦！</strong> <span th:text="${error}"></span>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+</body>
+</html>
