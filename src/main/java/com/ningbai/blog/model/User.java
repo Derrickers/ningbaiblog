@@ -53,7 +53,7 @@ public class User {
      *
      * @mbg.generated Tue Mar 10 22:51:50 CST 2020
      */
-    private Integer sex = 3;
+    private Integer sex = 2;
 
     /**
      *

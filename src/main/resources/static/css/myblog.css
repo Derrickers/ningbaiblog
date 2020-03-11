@@ -15,5 +15,36 @@ body{
 }
 
 .myimg{
-    width: 30px;
+    width: 70px;
+    height: 65px;
+}
+.myName{
+    font-size: larger;
+    font-weight: bolder;
+}
+.info-head{
+    background-color: white;
+    margin-left:30px;
+    margin-bottom: 10px;
+    margin-right: 30px;
+    padding: 10px;
+}
+
+.info-body{
+    background-color: white;
+    margin-left:30px;
+    margin-right: 30px;
+    padding: 10px;
+}
+
+.info-body:after{
+    clear:both;
+    content:'';
+    display:block;
+    width:0;height:0;
+    visibility:hidden;
+}
+
+.sidebar{
+    margin: 5px;
 }

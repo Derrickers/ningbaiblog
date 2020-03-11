@@ -51,11 +51,11 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="/info/me">个人信息</a></li>
+                            <li><a th:href="'/info/'+${session.user.id}">个人信息</a></li>
                             <li><a href="#">Another action</a></li>
                             <li><a href="#">Something else here</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="/logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>走啦～</a></li>
+                            <li><a href="/logout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> 走啦～</a></li>
                         </ul>
                     </li>
                 </ul>

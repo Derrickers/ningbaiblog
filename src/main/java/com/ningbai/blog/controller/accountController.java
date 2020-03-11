@@ -41,6 +41,7 @@ public class accountController {
      * @param method 方法：login/register
      * @param model 用于向页面添加属性
      * @param response 用户设置cookie
+     * @param name 接收用户自定义姓名
      * @return 跳转到对应页面
      */
     @PostMapping("/account")
@@ -48,6 +49,7 @@ public class accountController {
                                 @RequestParam(value = "password") String password,
                                 @RequestParam(value = "duPass", required = false) String duPass,
                                 @RequestParam(value = "method") String method,
+                                @RequestParam(value = "name",defaultValue = "匿名用户") String name,
                                 Model model,
                                 HttpServletResponse response){
         UserExample userExample = new UserExample();
@@ -97,6 +99,7 @@ public class accountController {
             }else{
                 User user = new User();
                 user.setAccount(account);
+                user.setName(name);
                 user.setGmtCreate(System.currentTimeMillis());
                 user.setGmtModify(user.getGmtCreate());
                 user.setLabel("");

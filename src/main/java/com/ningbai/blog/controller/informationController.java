@@ -12,19 +12,33 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class informationController {
 
+    @GetMapping("/info/{id}")
+    public String Info(HttpServletResponse response,
+                       HttpServletRequest request,
+                       Model model,
+                       @PathVariable(name = "id") Long id){
+        User user = (User)request.getSession().getAttribute("user");
+        model.addAttribute("part","main");
+        if(id.equals(user.getId())){
+            model.addAttribute("isme","yes");
+        }else{
+            model.addAttribute("isme","no");
+        }
+        return "information";
+    }
     @GetMapping("/info/{id}/{part}")
     public String Info(HttpServletResponse response,
                        HttpServletRequest request,
                        Model model,
                        @PathVariable(name = "id") Long id,
-                       @PathVariable(name = "part") String part){
+                       @PathVariable(name="part",required = false) String part){
         User user = (User)request.getSession().getAttribute("user");
+        model.addAttribute("part",part);
         if(id.equals(user.getId())){
-            return "myinformation";
+            model.addAttribute("isme","yes");
         }else{
-            return "notmyinformation";
+            model.addAttribute("isme","no");
         }
-
-
+        return "information";
     }
 }
