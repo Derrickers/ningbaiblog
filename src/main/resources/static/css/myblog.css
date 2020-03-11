@@ -1,3 +1,7 @@
+body{
+    background-color: #efefef;
+}
+
 .mytable{
     padding-top: 20px;
 }
@@ -8,4 +12,8 @@
 .mybtn{
     margin-top: 5px;
     margin-left: 5px;
+}
+
+.myimg{
+    width: 30px;
 }
