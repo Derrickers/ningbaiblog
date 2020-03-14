@@ -5,6 +5,8 @@
 
 <generatorConfiguration>
     <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
         <!--进行数据库配置-->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/blog?nullCatalogMeansCurrent=true"
@@ -31,6 +33,11 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
+
+        <table schema="DB2ADMIN" tableName="blog" domainObjectName="Blog" >
+            <!--设置为false，自动生成驼峰标示-->
+            <property name="useActualColumnNames" value="false"/>
+        </table>
 
         <table schema="DB2ADMIN" tableName="user" domainObjectName="User" >
             <!--设置为false，自动生成驼峰标示-->
