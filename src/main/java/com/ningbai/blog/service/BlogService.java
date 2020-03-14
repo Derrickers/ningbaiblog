@@ -24,7 +24,7 @@ public class BlogService {
     @Autowired
     private UserMapper userMapper;
 
-    public PaginationDTO<BlogDTO> getBlogs(int page, Integer size){
+    public PaginationDTO<BlogDTO> getBlogList(int page, Integer size){
         BlogExample blogExample = new BlogExample();
         long totalCount = blogMapper.countByExample(blogExample);
         int offset = (page-1)*size;
@@ -47,5 +47,25 @@ public class BlogService {
         }
         paginationDTO.setData(blogDTOs);
         return paginationDTO;
+    }
+
+    public BlogDTO getBlog(Long id){
+        BlogExample blogExample = new BlogExample();
+        blogExample.createCriteria().andIdEqualTo(id);
+        List<Blog> blogs = blogMapper.selectByExample(blogExample);
+        BlogDTO blogDTO = new BlogDTO();
+        blogDTO.setBlog(blogs.get(0));
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andAccountEqualTo(blogDTO.getBlog().getAuthor());
+        List<User> users = userMapper.selectByExample(userExample);
+        if(users.size() == 0){
+            User user = new User();
+            user.setName("用户已注销");
+            user.setAccount("-1");
+            blogDTO.setUser(user);
+        }else{
+            blogDTO.setUser(users.get(0));
+        }
+        return blogDTO;
     }
 }

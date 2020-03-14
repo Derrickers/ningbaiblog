@@ -103,6 +103,8 @@ public class accountController {
                 user.setGmtCreate(System.currentTimeMillis());
                 user.setGmtModify(user.getGmtCreate());
                 user.setLabel("");
+                user.setName("匿名用户");
+                user.setDescription("还没有个人简介哦，快去设置一个吧");
                 user.setPassword(password);
                 userMapper.insert(user);
                 model.addAttribute("success","注册成功啦，快用刚刚注册好的账号登陆吧～");

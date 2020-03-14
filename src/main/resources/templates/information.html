@@ -12,62 +12,67 @@
 </head>
 <body>
 <div th:insert="navgater :: nav"></div>
-<div class="info-head">
-    <div class="media">
-        <div class="media-left media-middle">
-            <img class="media-object img-circle myimg" th:src="'/'+${session.user.avatarUrl}" alt="头像">
-        </div>
-        <div class="media-body">
-            <h4 class="media-heading"><span th:text="${session.user.name}"></span></h4>
-            性别：<span th:if="${session.user.sex == 0}">欧米茄</span>
-            <span th:if="${session.user.sex == 1}">贝塔</span>
-            <span th:if="${session.user.sex == 2}">阿尔法</span>
-            <br>
-            个人简介：<span th:text="${session.user.description}"></span>
-        </div>
-    </div>
-</div>
-<div class="info-body">
-    <div role="navigation">
-        <ul class="nav nav-tabs">
-            <li role="presentation" th:class="${part == 'main'}?'active':''">
-                <a th:href="'/info/'+${session.user.id}"><span class="glyphicon glyphicon-home"></span> 主页</a>
-            </li>
-            <li role="presentation" th:class="${part == 'blogs'}?'active':''">
-                <a th:href="'/info/'+${session.user.id}+'/blogs'"><span class="glyphicon glyphicon-th-list"></span>
-                    博客</a>
-            </li>
-            <li role="presentation" th:if="${isme == 'yes'}" th:class="${part == 'modify'}?'active':''">
-                <a th:href="'/info/'+${session.user.id}+'/modify'"><span class="glyphicon glyphicon-cog"></span> 修改个人信息</a>
-            </li>
-        </ul>
-    </div>
-    <div>
-        <div th:if="${part == 'main'}">
-            <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
-                <h3>您关注的话题</h3>
-                <hr>
-                <h3>您发布的博客</h3>
-                <hr>
-            </div>
-            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
-                <div class="sidebar">
-                    <h4>公告</h4>
+<div class="container-fluid">
+    <div class="row">
+        <div class="info-head">
+            <div class="media">
+                <div class="media-left media-middle">
+                    <img class="media-object img-circle myimg" th:src="'/'+${session.user.avatarUrl}" alt="头像">
                 </div>
-                <div class="sidebar">
-                    <h4>推荐博客</h4>
+                <div class="media-body">
+                    <h4 class="media-heading"><span th:text="${session.user.name}"></span></h4>
+                    性别：<span th:if="${session.user.sex == 0}">欧米茄</span>
+                    <span th:if="${session.user.sex == 1}">贝塔</span>
+                    <span th:if="${session.user.sex == 2}">阿尔法</span>
+                    <br>
+                    个人简介：<span th:text="${session.user.description}"></span>
                 </div>
             </div>
         </div>
-        <div th:if="${part == 'blogs'}">
-            <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"></div>
-            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
-        </div>
-        <div th:if="${part == 'modify'}">
-            <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"></div>
-            <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
+        <div class="info-body">
+            <div role="navigation">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" th:class="${part == 'main'}?'active':''">
+                        <a th:href="'/info/'+${session.user.id}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+                    </li>
+                    <li role="presentation" th:class="${part == 'blogs'}?'active':''">
+                        <a th:href="'/info/'+${session.user.id}+'/blogs'"><span class="glyphicon glyphicon-th-list"></span>
+                            博客</a>
+                    </li>
+                    <li role="presentation" th:if="${isme == 'yes'}" th:class="${part == 'modify'}?'active':''">
+                        <a th:href="'/info/'+${session.user.id}+'/modify'"><span class="glyphicon glyphicon-cog"></span> 修改个人信息</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <div th:if="${part == 'main'}">
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <h3>您关注的话题</h3>
+                        <hr>
+                        <h3>您发布的博客</h3>
+                        <hr>
+                    </div>
+                    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+                        <div class="sidebar">
+                            <h4>公告</h4>
+                        </div>
+                        <div class="sidebar">
+                            <h4>推荐博客</h4>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${part == 'blogs'}">
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"></div>
+                    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
+                </div>
+                <div th:if="${part == 'modify'}">
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"></div>
+                    <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 </body>
 </html>

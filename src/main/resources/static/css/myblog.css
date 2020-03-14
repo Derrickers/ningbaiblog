@@ -17,6 +17,7 @@ body{
 .myimg{
     width: 70px;
     height: 65px;
+    object-fit: cover;
 }
 .myName{
     font-size: larger;
@@ -80,4 +81,11 @@ body{
 }
 .tag-content{
     margin-top: 5px;
+}
+.blog-tag{
+    margin-top: 5px;
+    padding: 0;
+}
+.introduce{
+    margin-bottom: 5px;
 }

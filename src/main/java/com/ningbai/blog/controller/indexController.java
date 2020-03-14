@@ -19,7 +19,7 @@ public class indexController {
     public String indexPage(@RequestParam(name = "page",defaultValue = "1") Integer page,
                             @RequestParam(name = "size",defaultValue = "8") Integer size,
                             Model model){
-        PaginationDTO<BlogDTO> paginationDTO = blogService.getBlogs(page, size);
+        PaginationDTO<BlogDTO> paginationDTO = blogService.getBlogList(page, size);
         model.addAttribute("pagination",paginationDTO);
         return "index";
     }

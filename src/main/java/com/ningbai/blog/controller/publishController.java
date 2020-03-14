@@ -1,37 +1,43 @@
 package com.ningbai.blog.controller;
 
+import com.ningbai.blog.cache.HelpCache;
 import com.ningbai.blog.cache.TagCache;
 import com.ningbai.blog.mapper.BlogMapper;
 import com.ningbai.blog.model.Blog;
+import com.ningbai.blog.model.BlogExample;
 import com.ningbai.blog.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 public class publishController {
 
     private TagCache tagCache = new TagCache();
+    private HelpCache helpCache = new HelpCache();
 
     @Autowired
     private BlogMapper blogMapper;
 
-    private void addTags(Model model){
+    private void addAttribute(Model model){
         model.addAttribute("emotionTags",tagCache.getEmotion());
         model.addAttribute("lifeTags",tagCache.getLife());
         model.addAttribute("studyTags",tagCache.getStudy());
         model.addAttribute("surpriseTags",tagCache.getSurprise());
+        model.addAttribute("markdownhelp",helpCache.getMarkdownHelp());
     }
 
     @GetMapping("/publish")
     public String publishPage(Model model){
-        addTags(model);
+        addAttribute(model);
         return "publish";
     }
 
@@ -40,13 +46,15 @@ public class publishController {
     public String publish(HttpServletRequest request,
                           HttpServletResponse response,
                           Model model,
-                          @RequestParam(name = "title") String title,
-                          @RequestParam(name = "content") String content,
-                          @RequestParam(name = "tags") String tags){
-        addTags(model);
+                          @RequestParam(name = "title",required = false) String title,
+                          @RequestParam(name = "content",required = false) String content,
+                          @RequestParam(name = "tags",required = false) String tags,
+                          @RequestParam(name = "id",required = false)long id){
+        addAttribute(model);
         model.addAttribute("title",title);
         model.addAttribute("content",content);
         model.addAttribute("tags",tags);
+        model.addAttribute("id",id);
         User user = (User)request.getSession().getAttribute("user");
         if(user == null){
             model.addAttribute("error","请先登陆");
@@ -60,15 +68,49 @@ public class publishController {
             model.addAttribute("error","内容不能为空");
             return "publish";
         }
+        BlogExample blogExample = new BlogExample();
+        blogExample.createCriteria().andIdEqualTo(id);
+        List<Blog> blogs = blogMapper.selectByExample(blogExample);
         Blog blog = new Blog();
-        blog.setAuthor(user.getAccount());
-        blog.setTitle(title);
-        blog.setContent(content);
-        blog.setGmtCreate(System.currentTimeMillis());
-        blog.setGmtModify(blog.getGmtCreate());
-        blog.setTags(tags);
-        blogMapper.insert(blog);
+        if(blogs.size() == 0){
+            blog.setAuthor(user.getAccount());
+            blog.setTitle(title);
+            blog.setContent(content);
+            blog.setGmtCreate(System.currentTimeMillis());
+            blog.setGmtModify(blog.getGmtCreate());
+            blog.setTags(tags);
+            blog.setViewCount((long) 0);
+            blog.setLikeCount((long) 0);
+            blogMapper.insert(blog);
+        }else{
+            blog = blogs.get(0);
+            blog.setGmtModify(System.currentTimeMillis());
+            blog.setTitle(title);
+            blog.setContent(content);
+            blog.setTags(tags);
+            blogMapper.updateByExample(blog,blogExample);
+        }
+
         return "redirect:/";
+    }
+
+    @GetMapping("/publish/{id}")
+    public String modify(@PathVariable(value = "id") long id,
+                         Model model,
+                         HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
+        BlogExample blogExample = new BlogExample();
+        blogExample.createCriteria().andIdEqualTo(id);
+        List<Blog> blogs = blogMapper.selectByExample(blogExample);
+        Blog blog = blogs.get(0);
+        if(!user.getAccount().equals(blog.getAuthor())){
+            model.addAttribute("modify","false");
+            return "redirect:/blog/"+id;
+        }
+        model.addAttribute("title",blog.getTitle());
+        model.addAttribute("content",blog.getContent());
+        model.addAttribute("tags",blog.getTags());
+        return "publish";
     }
 
 }

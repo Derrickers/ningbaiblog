@@ -12,26 +12,34 @@
 </head>
 <body>
 <div th:insert="navgater :: nav"></div>
-<div class="info-body">
-    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-        <h3>最新博客</h3>
-        <hr>
-        <div th:each="blog : ${pagination.data}" class="media">
-            <div class="media-left">
-                <img class="media-object img-rounded myimg" th:src="${blog.user.avatarUrl}" th:alt="${blog.user.name}">
+<div class="info-body container-fluid">
+    <div class="row">
+        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+            <h3>最新博客</h3>
+            <hr>
+            <div th:each="blog : ${pagination.data}" class="media">
+                <div class="media-left">
+                    <img class="media-object img-circle myimg" th:src="${blog.user.avatarUrl}" th:alt="${blog.user.name}">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading"><a th:href="'/blog/'+${blog.blog.id}" th:text="${blog.blog.title}"></a></h4>
+                    发布时间：<span th:text="${#dates.format(blog.blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
+                    点赞数：<span th:text="${blog.blog.likeCount}"></span> ｜
+                    阅读数：<span th:text="${blog.blog.viewCount}"></span> ｜
+                    标签： <span th:text="${blog.blog.tags}"></span>｜
+                </div>
+                <hr>
             </div>
-            <div class="media-body">
-                <h4 class="media-heading"><a th:href="'/blog'+${blog.blog.id}" th:text="${blog.blog.title}"></a></h4>
-                发布时间：<span th:text="${#dates.format(blog.blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
-                点赞数：<span th:text="${blog.blog.likeCount}"></span> ｜
-                阅读数：<span th:text="${blog.blog.viewCount}"></span> ｜
-                标签： <span th:text="${blog.blog.tags}"></span>｜
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+            <div class="sidebar">
+                <h4>友情连接</h4>
             </div>
             <hr>
+            <div class="sidebar">
+                <h4>推荐栏目</h4>
+            </div>
         </div>
-    </div>
-    <div class="info-body col-lg-3 col-md-3 col-sm-3 col-xs-3">
-
     </div>
 </div>
 </body>
