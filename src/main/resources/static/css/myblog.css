@@ -89,3 +89,23 @@ body{
 .introduce{
     margin-bottom: 5px;
 }
+.moreinfo{
+    padding: 5px;
+    float: right;
+    border:1px solid silver;
+    border-radius: 30px;
+}
+.myblog-display{
+    margin-top: 5px;
+}
+
+.mylabel{
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #f1f1f1;
+}
+.mylabel-active{
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #218fcc;
+}

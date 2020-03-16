@@ -9,6 +9,7 @@
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/moment.js" type="application/javascript"></script>
+    <script src="/js/myblog.js" type="application/javascript"></script>
 </head>
 <body>
 <div th:insert="navgater :: nav"></div>
@@ -17,15 +18,15 @@
         <div class="info-head">
             <div class="media">
                 <div class="media-left media-middle">
-                    <img class="media-object img-circle myimg" th:src="'/'+${session.user.avatarUrl}" alt="头像">
+                    <img class="media-object img-circle myimg" th:src="'/'+${user.avatarUrl}" alt="头像">
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading"><span th:text="${session.user.name}"></span></h4>
-                    性别：<span th:if="${session.user.sex == 0}">欧米茄</span>
-                    <span th:if="${session.user.sex == 1}">贝塔</span>
-                    <span th:if="${session.user.sex == 2}">阿尔法</span>
+                    <h4 class="media-heading"><span th:text="${user.name}"></span></h4>
+                    性别：<span th:if="${user.sex == 0}">欧米茄</span>
+                    <span th:if="${user.sex == 1}">贝塔</span>
+                    <span th:if="${user.sex == 2}">阿尔法</span>
                     <br>
-                    个人简介：<span th:text="${session.user.description}"></span>
+                    个人简介：<span th:text="${user.description}"></span>
                 </div>
             </div>
         </div>
@@ -33,24 +34,42 @@
             <div role="navigation">
                 <ul class="nav nav-tabs">
                     <li role="presentation" th:class="${part == 'main'}?'active':''">
-                        <a th:href="'/info/'+${session.user.id}"><span class="glyphicon glyphicon-home"></span> 主页</a>
+                        <a th:href="'/info/'+${user.id}"><span class="glyphicon glyphicon-home"></span> 主页</a>
                     </li>
                     <li role="presentation" th:class="${part == 'blogs'}?'active':''">
-                        <a th:href="'/info/'+${session.user.id}+'/blogs'"><span class="glyphicon glyphicon-th-list"></span>
+                        <a th:href="'/info/'+${user.id}+'/blogs'"><span class="glyphicon glyphicon-th-list"></span>
                             博客</a>
                     </li>
                     <li role="presentation" th:if="${isme == 'yes'}" th:class="${part == 'modify'}?'active':''">
-                        <a th:href="'/info/'+${session.user.id}+'/modify'"><span class="glyphicon glyphicon-cog"></span> 修改个人信息</a>
+                        <a th:href="'/info/'+${user.id}+'/modify'"><span class="glyphicon glyphicon-cog"></span> 修改个人信息</a>
                     </li>
                 </ul>
             </div>
             <div>
                 <div th:if="${part == 'main'}">
                     <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
-                        <h3>您关注的话题</h3>
+                        <h3>您关注的blog</h3>
                         <hr>
                         <h3>您发布的博客</h3>
+                        <div>
+                                <a th:href="'/info/'+${session.user.id}+'/blogs'" class="moreinfo">
+                                    <span>更多 </span>
+                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                </a>
+                        </div>
                         <hr>
+                        <div th:each="blog,blogstate : ${myblogs}" th:if="${blogstate.count<=3}" class="media">
+                            <div class="media-body">
+                                <h4 class="media-heading"><a th:href="'/blog/'+${blog.id}" th:text="${blog.title}"></a></h4>
+                                发布时间：<span th:text="${#dates.format(blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
+                                点赞数：<span th:text="${blog.likeCount}"></span> ｜
+                                阅读数：<span th:text="${blog.viewCount}"></span> ｜
+                                标签： <span th:text="${blog.tags}"></span>｜
+                                <a th:href="'/publish/'+${blog.id}" th:if="${isme == 'yes'}">修改</a>
+                            </div>
+                            <hr>
+                        </div>
+
                     </div>
                     <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
                         <div class="sidebar">
@@ -62,11 +81,65 @@
                     </div>
                 </div>
                 <div th:if="${part == 'blogs'}">
-                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"></div>
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9 myblog-display">
+                        <div th:each="blog : ${myblogs}" class="media">
+                            <div class="media-body">
+                                <h4 class="media-heading"><a th:href="'/blog/'+${blog.id}" th:text="${blog.title}"></a></h4>
+                                发布时间：<span th:text="${#dates.format(blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
+                                点赞数：<span th:text="${blog.likeCount}"></span> ｜
+                                阅读数：<span th:text="${blog.viewCount}"></span> ｜
+                                标签： <span th:text="${blog.tags}"></span>｜
+                                <a th:href="'/publish/'+${blog.id}" th:if="${isme == 'yes'}">修改</a>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
                     <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
                 </div>
                 <div th:if="${part == 'modify'}">
-                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"></div>
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <form th:action="'/info/'+${user.id}+'/modify'" method="post" id="modify-form">
+                            <div class="form-group">
+                                <label for="name">昵称：</label>
+                                <input class="form-control" id="name" name="name" th:value="${user.name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="account">账户：</label>
+                                <input class="form-control" id="account" name="account" th:value="${user.account}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon" th:onclick="showPassword()">
+                                        <span id="showOrHide" class="glyphicon glyphicon-eye-close"></span>
+                                    </div>
+                                    <input type="password" class="form-control" id="password" name="password" th:value="${user.password}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">个人简介：</label>
+                                <input class="form-control" id="description" name="description" th:value="${user.description}">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">性别：</label>
+                                <label>
+                                    <label id="sex-2" th:class="${user.sex == 2}?'mylabel-active mylabel':'mylabel'" onclick="chooseSex(2)">
+                                        <input id="sex-input-2" style="display: none" value="2" name="sex">
+                                        <span>阿尔法</span>
+                                    </label>
+                                    <label id="sex-1" th:class="${user.sex == 1}?'mylabel-active mylabel':'mylabel'" onclick="chooseSex(1)">
+                                        <input id="sex-input-1" style="display: none" value="1" name="sex">
+                                        <span>贝塔</span>
+                                    </label>
+                                    <label id="sex-0" th:class="${user.sex == 0}?'mylabel-active mylabel':'mylabel'" onclick="chooseSex(0)">
+                                        <input id="sex-input-0" style="display: none" value="0" name="sex">
+                                        <span>欧米茄</span>
+                                    </label>
+                                </label>
+                            </div>
+                            <button th:onclick="summitModify()" class="btn btn-default">保存</button>
+                        </form>
+                    </div>
                     <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
                 </div>
             </div>

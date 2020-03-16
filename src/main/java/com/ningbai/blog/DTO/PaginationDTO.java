@@ -36,7 +36,7 @@ public class PaginationDTO<T> {
         for(int i = 1;i<=3;i++){
             if(page-i>0)
                 pages.add(0,page-i);
-            if(page+i<=this.page)
+            if(page+i<=this.totalPage)
                 pages.add(page+i);
         }
         first = !pages.contains((long)1);

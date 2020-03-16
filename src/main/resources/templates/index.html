@@ -16,8 +16,8 @@
     <div class="row">
         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
             <h3>最新博客</h3>
-            <hr>
             <div th:each="blog : ${pagination.data}" class="media">
+                <hr>
                 <div class="media-left">
                     <img class="media-object img-circle myimg" th:src="${blog.user.avatarUrl}" th:alt="${blog.user.name}">
                 </div>
@@ -28,8 +28,37 @@
                     阅读数：<span th:text="${blog.blog.viewCount}"></span> ｜
                     标签： <span th:text="${blog.blog.tags}"></span>｜
                 </div>
-                <hr>
             </div>
+            <nav aria-label="Page navigation" style="padding-top: 10px;padding-left: 10px">
+                <ul class="pagination">
+                    <li th:if="${pagination.first == true}">
+                        <a th:href="'/?page=1'" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li th:if="${pagination.before == true}">
+                        <a th:href="@{/(page=${pagination.page - 1})}" aria-label="Previous">
+                            <span aria-hidden="true"><</span>
+                        </a>
+                    </li>
+
+                    <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page}?'active':''">
+                        <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+                    </li>
+
+                    <li th:if="${pagination.next == true}">
+                        <a th:href="@{/(page=${pagination.page + 1})}" aria-label="Previous">
+                            <span aria-hidden="true">></span>
+                        </a>
+                    </li>
+
+                    <li th:if="${pagination.end == true}">
+                        <a th:href="@{/(page=${pagination.totalPage})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
             <div class="sidebar">

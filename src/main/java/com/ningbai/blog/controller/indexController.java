@@ -17,7 +17,7 @@ public class indexController {
 
     @GetMapping("/")
     public String indexPage(@RequestParam(name = "page",defaultValue = "1") Integer page,
-                            @RequestParam(name = "size",defaultValue = "8") Integer size,
+                            @RequestParam(name = "size",defaultValue = "1") Integer size,
                             Model model){
         PaginationDTO<BlogDTO> paginationDTO = blogService.getBlogList(page, size);
         model.addAttribute("pagination",paginationDTO);

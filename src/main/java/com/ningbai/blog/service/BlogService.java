@@ -68,4 +68,12 @@ public class BlogService {
         }
         return blogDTO;
     }
+
+    public ArrayList<Blog> getBlogByAccount(String account) {
+        BlogExample blogExample = new BlogExample();
+        blogExample.createCriteria().andAuthorEqualTo(account);
+        blogExample.setOrderByClause("`gmt_create` desc");
+        List<Blog> blogs = blogMapper.selectByExample(blogExample);
+        return (ArrayList<Blog>) blogs;
+    }
 }

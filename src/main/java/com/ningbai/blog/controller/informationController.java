@@ -1,16 +1,32 @@
 package com.ningbai.blog.controller;
 
+import com.ningbai.blog.mapper.BlogMapper;
+import com.ningbai.blog.mapper.UserMapper;
+import com.ningbai.blog.model.Blog;
 import com.ningbai.blog.model.User;
+import com.ningbai.blog.model.UserExample;
+import com.ningbai.blog.service.BlogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class informationController {
+
+    @Autowired
+    private BlogService blogService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping("/info/{id}")
     public String Info(HttpServletResponse response,
@@ -19,13 +35,27 @@ public class informationController {
                        @PathVariable(name = "id") Long id){
         User user = (User)request.getSession().getAttribute("user");
         model.addAttribute("part","main");
-        if(id.equals(user.getId())){
-            model.addAttribute("isme","yes");
-        }else{
-            model.addAttribute("isme","no");
-        }
+        User pageUser = judgeUser(model, id, user);
+        ArrayList<Blog> blogs = blogService.getBlogByAccount(pageUser.getAccount());
+        model.addAttribute("myblogs",blogs);
         return "information";
     }
+
+    private User judgeUser(Model model, Long id, User user) {
+        if(id.equals(user.getId())){
+            model.addAttribute("user",user);
+            model.addAttribute("isme","yes");
+        }else{
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andIdEqualTo(id);
+            List<User> users = userMapper.selectByExample(userExample);
+            user = users.get(0);
+            model.addAttribute("user", user);
+            model.addAttribute("isme","no");
+        }
+        return user;
+    }
+
     @GetMapping("/info/{id}/{part}")
     public String Info(HttpServletResponse response,
                        HttpServletRequest request,
@@ -34,11 +64,32 @@ public class informationController {
                        @PathVariable(name="part",required = false) String part){
         User user = (User)request.getSession().getAttribute("user");
         model.addAttribute("part",part);
-        if(id.equals(user.getId())){
-            model.addAttribute("isme","yes");
-        }else{
-            model.addAttribute("isme","no");
+        User pageUser = judgeUser(model, id, user);
+        if(part.equals("blogs")){
+            ArrayList<Blog> blogs = blogService.getBlogByAccount(pageUser.getAccount());
+            model.addAttribute("myblogs",blogs);
         }
         return "information";
+    }
+
+    @PostMapping("/info/{id}/modify")
+    public String ModifyInfo(@PathVariable(name = "id") Long id,
+                             @RequestParam(value = "name") String name,
+                             @RequestParam(value = "sex") Integer sex,
+                             @RequestParam(value = "account") String account,
+                             @RequestParam(value = "password") String password,
+                             @RequestParam(value = "description") String description,
+                             HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
+        user.setName(name);
+        user.setDescription(description);
+        user.setGmtModify(System.currentTimeMillis());
+        user.setPassword(password);
+        user.setAccount(account);
+        user.setSex(sex);
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andIdEqualTo(id);
+        userMapper.updateByExample(user,userExample);
+        return "redirect:/info/"+id.toString();
     }
 }

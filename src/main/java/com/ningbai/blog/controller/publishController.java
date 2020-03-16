@@ -44,17 +44,15 @@ public class publishController {
 
     @PostMapping("/publish")
     public String publish(HttpServletRequest request,
-                          HttpServletResponse response,
                           Model model,
-                          @RequestParam(name = "title",required = false) String title,
-                          @RequestParam(name = "content",required = false) String content,
-                          @RequestParam(name = "tags",required = false) String tags,
-                          @RequestParam(name = "id",required = false)long id){
+                          @RequestParam(name = "title", required = false) String title,
+                          @RequestParam(name = "content", required = false) String content,
+                          @RequestParam(name = "tags", required = false) String tags,
+                          @RequestParam(name = "id", required = false) Long id){
         addAttribute(model);
         model.addAttribute("title",title);
         model.addAttribute("content",content);
         model.addAttribute("tags",tags);
-        model.addAttribute("id",id);
         User user = (User)request.getSession().getAttribute("user");
         if(user == null){
             model.addAttribute("error","请先登陆");
@@ -68,11 +66,8 @@ public class publishController {
             model.addAttribute("error","内容不能为空");
             return "publish";
         }
-        BlogExample blogExample = new BlogExample();
-        blogExample.createCriteria().andIdEqualTo(id);
-        List<Blog> blogs = blogMapper.selectByExample(blogExample);
         Blog blog = new Blog();
-        if(blogs.size() == 0){
+        if(id == null){
             blog.setAuthor(user.getAccount());
             blog.setTitle(title);
             blog.setContent(content);
@@ -83,6 +78,9 @@ public class publishController {
             blog.setLikeCount((long) 0);
             blogMapper.insert(blog);
         }else{
+            BlogExample blogExample = new BlogExample();
+            blogExample.createCriteria().andIdEqualTo(id);
+            List<Blog> blogs = blogMapper.selectByExample(blogExample);
             blog = blogs.get(0);
             blog.setGmtModify(System.currentTimeMillis());
             blog.setTitle(title);
@@ -90,7 +88,6 @@ public class publishController {
             blog.setTags(tags);
             blogMapper.updateByExample(blog,blogExample);
         }
-
         return "redirect:/";
     }
 
@@ -110,6 +107,7 @@ public class publishController {
         model.addAttribute("title",blog.getTitle());
         model.addAttribute("content",blog.getContent());
         model.addAttribute("tags",blog.getTags());
+        model.addAttribute("id",id);
         return "publish";
     }
 
