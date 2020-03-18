@@ -4,7 +4,6 @@ import com.ningbai.blog.cache.HelpCache;
 import com.ningbai.blog.cache.TagCache;
 import com.ningbai.blog.mapper.BlogMapper;
 import com.ningbai.blog.model.Blog;
-import com.ningbai.blog.model.BlogExample;
 import com.ningbai.blog.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 @Controller
 public class publishController {
@@ -78,15 +75,12 @@ public class publishController {
             blog.setLikeCount((long) 0);
             blogMapper.insert(blog);
         }else{
-            BlogExample blogExample = new BlogExample();
-            blogExample.createCriteria().andIdEqualTo(id);
-            List<Blog> blogs = blogMapper.selectByExample(blogExample);
-            blog = blogs.get(0);
+            blog = blogMapper.selectByPrimaryKey(id);
             blog.setGmtModify(System.currentTimeMillis());
             blog.setTitle(title);
             blog.setContent(content);
             blog.setTags(tags);
-            blogMapper.updateByExample(blog,blogExample);
+            blogMapper.updateByPrimaryKey(blog);
         }
         return "redirect:/";
     }
@@ -96,10 +90,7 @@ public class publishController {
                          Model model,
                          HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
-        BlogExample blogExample = new BlogExample();
-        blogExample.createCriteria().andIdEqualTo(id);
-        List<Blog> blogs = blogMapper.selectByExample(blogExample);
-        Blog blog = blogs.get(0);
+        Blog blog = blogMapper.selectByPrimaryKey(id);
         if(!user.getAccount().equals(blog.getAuthor())){
             model.addAttribute("modify","false");
             return "redirect:/blog/"+id;

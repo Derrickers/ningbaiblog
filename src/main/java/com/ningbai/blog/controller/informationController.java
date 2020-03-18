@@ -1,5 +1,7 @@
 package com.ningbai.blog.controller;
 
+import com.ningbai.blog.exception.MyException;
+import com.ningbai.blog.exception.UserErrorCode;
 import com.ningbai.blog.mapper.BlogMapper;
 import com.ningbai.blog.mapper.UserMapper;
 import com.ningbai.blog.model.Blog;
@@ -46,10 +48,10 @@ public class informationController {
             model.addAttribute("user",user);
             model.addAttribute("isme","yes");
         }else{
-            UserExample userExample = new UserExample();
-            userExample.createCriteria().andIdEqualTo(id);
-            List<User> users = userMapper.selectByExample(userExample);
-            user = users.get(0);
+            user = userMapper.selectByPrimaryKey(id);
+            if(user ==  null){
+                throw new MyException(UserErrorCode.USER_NOT_FOUNT);
+            }
             model.addAttribute("user", user);
             model.addAttribute("isme","no");
         }

@@ -3,6 +3,8 @@ package com.ningbai.blog.service;
 
 import com.ningbai.blog.DTO.BlogDTO;
 import com.ningbai.blog.DTO.PaginationDTO;
+import com.ningbai.blog.exception.BlogErrorCode;
+import com.ningbai.blog.exception.MyException;
 import com.ningbai.blog.mapper.BlogMapper;
 import com.ningbai.blog.mapper.UserMapper;
 import com.ningbai.blog.model.Blog;
@@ -50,11 +52,12 @@ public class BlogService {
     }
 
     public BlogDTO getBlog(Long id){
-        BlogExample blogExample = new BlogExample();
-        blogExample.createCriteria().andIdEqualTo(id);
-        List<Blog> blogs = blogMapper.selectByExample(blogExample);
+        Blog blog = blogMapper.selectByPrimaryKey(id);
+        if(blog == null){
+            throw new MyException(BlogErrorCode.BLOG_NOT_FOUND);
+        }
         BlogDTO blogDTO = new BlogDTO();
-        blogDTO.setBlog(blogs.get(0));
+        blogDTO.setBlog(blog);
         UserExample userExample = new UserExample();
         userExample.createCriteria().andAccountEqualTo(blogDTO.getBlog().getAuthor());
         List<User> users = userMapper.selectByExample(userExample);
