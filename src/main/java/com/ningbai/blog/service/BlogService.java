@@ -72,11 +72,33 @@ public class BlogService {
         return blogDTO;
     }
 
-    public ArrayList<Blog> getBlogByAccount(String account) {
+    public PaginationDTO<BlogDTO> getBlogByAccount(String account, int page, int size) {
         BlogExample blogExample = new BlogExample();
         blogExample.createCriteria().andAuthorEqualTo(account);
+        long totalCount = blogMapper.countByExample(blogExample);
         blogExample.setOrderByClause("`gmt_create` desc");
-        List<Blog> blogs = blogMapper.selectByExample(blogExample);
-        return (ArrayList<Blog>) blogs;
+        int offset = (page-1)*size;
+        PaginationDTO<BlogDTO> paginationDTO = new PaginationDTO<>();
+        ArrayList<BlogDTO> blogDTOs = new ArrayList<>();
+        paginationDTO.setPagination(totalCount,(long)page,size);
+        List<Blog> bloglist = blogMapper.selectByExampleWithRowbounds(blogExample, new RowBounds(offset, size));
+        User nullUser = new User();
+        nullUser.setName("用户已注销");
+        for(Blog blog:bloglist){
+            BlogDTO blogDTO = new BlogDTO();
+            blogDTO.setBlog(blog);
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andAccountEqualTo(blog.getAuthor());
+            List<User> users = userMapper.selectByExample(userExample);
+            User user = (users.size() == 0)?(nullUser):(users.get(0));
+            blogDTO.setUser(user);
+            blogDTOs.add(blogDTO);
+        }
+        paginationDTO.setData(blogDTOs);
+        return paginationDTO;
+    }
+
+    public void deleteById(long id) {
+        blogMapper.deleteByPrimaryKey(id);
     }
 }

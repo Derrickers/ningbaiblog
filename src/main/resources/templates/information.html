@@ -58,17 +58,6 @@
                                 </a>
                         </div>
                         <hr>
-                        <div th:each="blog,blogstate : ${myblogs}" th:if="${blogstate.count<=3}" class="media">
-                            <div class="media-body">
-                                <h4 class="media-heading"><a th:href="'/blog/'+${blog.id}" th:text="${blog.title}"></a></h4>
-                                发布时间：<span th:text="${#dates.format(blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
-                                点赞数：<span th:text="${blog.likeCount}"></span> ｜
-                                阅读数：<span th:text="${blog.viewCount}"></span> ｜
-                                标签： <span th:text="${blog.tags}"></span>｜
-                                <a th:href="'/publish/'+${blog.id}" th:if="${isme == 'yes'}">修改</a>
-                            </div>
-                            <hr>
-                        </div>
 
                     </div>
                     <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
@@ -82,17 +71,48 @@
                 </div>
                 <div th:if="${part == 'blogs'}">
                     <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9 myblog-display">
-                        <div th:each="blog : ${myblogs}" class="media">
+                        <div th:each="blog : ${pagination.data}" class="media">
                             <div class="media-body">
-                                <h4 class="media-heading"><a th:href="'/blog/'+${blog.id}" th:text="${blog.title}"></a></h4>
-                                发布时间：<span th:text="${#dates.format(blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
-                                点赞数：<span th:text="${blog.likeCount}"></span> ｜
-                                阅读数：<span th:text="${blog.viewCount}"></span> ｜
-                                标签： <span th:text="${blog.tags}"></span>｜
-                                <a th:href="'/publish/'+${blog.id}" th:if="${isme == 'yes'}">修改</a>
+                                <h4 class="media-heading"><a th:href="'/blog/'+${blog.blog.id}" th:text="${blog.blog.title}"></a></h4>
+                                发布时间：<span th:text="${#dates.format(blog.blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
+                                点赞数：<span th:text="${blog.blog.likeCount}"></span> ｜
+                                阅读数：<span th:text="${blog.blog.viewCount}"></span> ｜
+                                标签： <span th:text="${blog.blog.tags}"></span>｜
+                                <a th:href="'/publish/'+${blog.blog.id}" th:if="${isme == 'yes'}">修改</a> ｜
+                                <a th:href="'/blog/delete/'+${blog.blog.id}+'/info'" th:if="${isme == 'yes'}">删除</a>
                             </div>
                             <hr>
                         </div>
+                        <nav aria-label="Page navigation" style="padding-top: 10px;padding-left: 10px">
+                            <ul class="pagination">
+                                <li th:if="${pagination.first == true}">
+                                    <a th:href="'/info/'+${user.id}+'/blogs?page=1'" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li th:if="${pagination.before == true}">
+                                    <a th:href="@{'/info/'+${user.id}+'/blogs?page='+${pagination.page - 1}}" aria-label="Previous">
+                                        <span aria-hidden="true"><</span>
+                                    </a>
+                                </li>
+
+                                <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page}?'active':''">
+                                    <a th:href="@{'/info/'+${user.id}+'/blogs?page='+${page}}" th:text="${page}"></a>
+                                </li>
+
+                                <li th:if="${pagination.next == true}">
+                                    <a th:href="@{'/info/'+${user.id}+'/blogs?page='+${pagination.page + 1}}" aria-label="Previous">
+                                        <span aria-hidden="true">></span>
+                                    </a>
+                                </li>
+
+                                <li th:if="${pagination.end == true}">
+                                    <a th:href="@{'/info/'+${user.id}+'/blogs?page='+${pagination.totalPage}}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                     <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3 sidebar"></div>
                 </div>

@@ -2,6 +2,8 @@ package com.ningbai.blog.controller;
 
 import com.ningbai.blog.cache.HelpCache;
 import com.ningbai.blog.cache.TagCache;
+import com.ningbai.blog.exception.MyException;
+import com.ningbai.blog.exception.UserErrorCode;
 import com.ningbai.blog.mapper.BlogMapper;
 import com.ningbai.blog.model.Blog;
 import com.ningbai.blog.model.User;
@@ -92,8 +94,7 @@ public class publishController {
         User user = (User)request.getSession().getAttribute("user");
         Blog blog = blogMapper.selectByPrimaryKey(id);
         if(!user.getAccount().equals(blog.getAuthor())){
-            model.addAttribute("modify","false");
-            return "redirect:/blog/"+id;
+            throw new MyException(UserErrorCode.USER_NOT_MATCH);
         }
         model.addAttribute("title",blog.getTitle());
         model.addAttribute("content",blog.getContent());

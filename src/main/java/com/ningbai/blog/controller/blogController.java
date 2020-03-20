@@ -1,6 +1,8 @@
 package com.ningbai.blog.controller;
 
 import com.ningbai.blog.DTO.BlogDTO;
+import com.ningbai.blog.exception.MyException;
+import com.ningbai.blog.exception.UserErrorCode;
 import com.ningbai.blog.model.User;
 import com.ningbai.blog.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +35,22 @@ public class blogController {
         model.addAttribute("blog",blogDTO);
         return "blog";
     }
+
+    @GetMapping("/blog/delete/{id}/{page}")
+    public String deleteBlog(@PathVariable(value = "id") long id,
+                             @PathVariable(value = "page") String page,
+                             HttpServletRequest request){
+        User pageUser = (User) request.getSession().getAttribute("user");
+        BlogDTO blogDTO = blogService.getBlog(id);
+        if(!pageUser.getAccount().equals(blogDTO.getUser().getAccount())){
+            throw new MyException(UserErrorCode.USER_NOT_MATCH);
+        }
+        blogService.deleteById(id);
+        if(page.equals("info")){
+            return "redirect:/info/"+pageUser.getId()+"/blogs";
+        }else{
+            return "redirect:/";
+        }
+    }
+
 }

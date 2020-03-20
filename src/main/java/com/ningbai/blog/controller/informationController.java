@@ -1,5 +1,7 @@
 package com.ningbai.blog.controller;
 
+import com.ningbai.blog.DTO.BlogDTO;
+import com.ningbai.blog.DTO.PaginationDTO;
 import com.ningbai.blog.exception.MyException;
 import com.ningbai.blog.exception.UserErrorCode;
 import com.ningbai.blog.mapper.BlogMapper;
@@ -11,10 +13,7 @@ import com.ningbai.blog.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,8 +37,6 @@ public class informationController {
         User user = (User)request.getSession().getAttribute("user");
         model.addAttribute("part","main");
         User pageUser = judgeUser(model, id, user);
-        ArrayList<Blog> blogs = blogService.getBlogByAccount(pageUser.getAccount());
-        model.addAttribute("myblogs",blogs);
         return "information";
     }
 
@@ -63,13 +60,15 @@ public class informationController {
                        HttpServletRequest request,
                        Model model,
                        @PathVariable(name = "id") Long id,
-                       @PathVariable(name="part",required = false) String part){
+                       @PathVariable(name="part",required = false) String part,
+                       @RequestParam(name = "page",defaultValue = "1") int page,
+                       @RequestParam(name = "size",defaultValue = "1") int size){
         User user = (User)request.getSession().getAttribute("user");
         model.addAttribute("part",part);
         User pageUser = judgeUser(model, id, user);
         if(part.equals("blogs")){
-            ArrayList<Blog> blogs = blogService.getBlogByAccount(pageUser.getAccount());
-            model.addAttribute("myblogs",blogs);
+            PaginationDTO<BlogDTO> paginationDTO = blogService.getBlogByAccount(pageUser.getAccount(), page, size);
+            model.addAttribute("pagination",paginationDTO);
         }
         return "information";
     }
