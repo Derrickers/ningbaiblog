@@ -25,8 +25,7 @@
                     <h4 class="media-heading"><a th:href="'/blog/'+${blog.blog.id}" th:text="${blog.blog.title}"></a></h4>
                     发布时间：<span th:text="${#dates.format(blog.blog.gmtCreate,'yyyy-MM-dd HH:mm')}"></span><br>
                     点赞数：<span th:text="${blog.blog.likeCount}"></span> ｜
-                    阅读数：<span th:text="${blog.blog.viewCount}"></span> ｜
-                    标签： <span th:text="${blog.blog.tags}"></span>｜
+                    阅读数：<span th:text="${blog.blog.viewCount}"></span>
                 </div>
             </div>
             <nav aria-label="Page navigation" style="padding-top: 10px;padding-left: 10px">

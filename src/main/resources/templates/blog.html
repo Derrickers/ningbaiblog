@@ -19,25 +19,31 @@
     <div class="row">
         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
             <h3 th:text="${blog.blog.title}"></h3>
-            <div class="introduce">
+            <div class="introduce col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <a th:text="${blog.user.name}" th:href="'/info/'+${blog.user.id}"></a> ｜
                 最后发布于：<span th:text="${#dates.format(blog.blog.gmtModify,'yyyy-MM-dd HH:mm')}"></span> ｜
                 阅读数：<span th:text="${blog.blog.viewCount}"></span> ｜
                 点赞数：<span th:text="${blog.blog.likeCount}"></span> ｜
+                <span >
+                    <a th:href="@{'/blog/like?blog='+${blog.blog.id}+'&user='+${session.user.id}}">
+                        <span th:class="${blogPage.likable == true}?'glyphicon glyphicon-heart-empty':'glyphicon glyphicon-heart'"></span> 点赞
+                    </a>
+                </span>
                 <div class="blog-tag col-lg-10 col-md-10 col-sm-10 col-xs-10">
                     标签：
-                    <span th:each="tag : ${tags}">
+                    <span th:each="tag : ${blog.tags}">
                     <span class="label label-info tag">
                         <span class="glyphicon glyphicon-tag tag-icon"></span>
                         <span class="label label-info" th:text="${tag}"></span>
                     </span>
                 </span>
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <a th:if="${modify == 'true'}" th:href="'/publish/'+${blog.blog.id}">修改</a>｜
-                    <a th:if="${modify == 'true'}" th:href="'/blog/delete/'+${blog.blog.id}+'/blog'">删除</a>
+                <div th:if="${blogPage.modifiable == 'true'}" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <a th:href="'/publish/'+${blog.blog.id}">修改 |</a>
+                    <a th:href="'/blog/delete/'+${blog.blog.id}+'/blog'">删除</a>
                 </div>
             </div>
+
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="blog-view">
                 <textarea style="display: none" th:text="${blog.blog.content}"></textarea>

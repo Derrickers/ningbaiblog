@@ -8,4 +8,9 @@ import lombok.Data;
 public class BlogDTO {
     private Blog blog;
     private User user;
+    private String[] tags;
+
+    public void setTags(String tag){
+        tags = tag.split("/");
+    }
 }
