@@ -111,7 +111,7 @@
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/blog</url>
                     <user>root</user>
-                    <password>25981745</password>
+                    <password>25981745Ljn.</password>
                 </configuration>
                 <dependencies>
                     <dependency>
